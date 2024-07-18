@@ -140,19 +140,19 @@ header {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 }
-/* Footer */
-footer {
-    background-color: #4CAF50;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    margin-top: 10px;
-  
+main {
+    flex: 1; /* This pushes the footer to the bottom */
 }
 
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
 footer p {
     margin: 0;
 }
