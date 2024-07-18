@@ -114,46 +114,50 @@ button:hover {
         </section>
     </main>
     <script>
-        document.getElementById('payment-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        const express = require('express');
+const bodyParser = require('body-parser');
+const twilio = require('twilio');
 
-            const data = {
-                card_number: document.getElementById('card-number').value,
-                card_name: document.getElementById('card-name').value,
-                expiry_date: document.getElementById('expiry-date').value,
-                cvv: document.getElementById('cvv').value,
-                billing_address: document.getElementById('billing-address').value,
-                phone_number: document.getElementById('phone-number').value
-            };
+// Initialize Twilio client
+const accountSid = 'SK8b92dc81eab5d3847a78805fc2bc527e';
+const authToken = 'c3c0d4361901f96f9a163459ed7b673e';
+const twilioPhoneNumber = '+27636601370';
 
-            fetch('https://tlapeng-general-dealer.netlify.app/payment.html', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Payment Successful! SMS sent.');
-                    window.location.href = 'index.html';
-                } else {
-                    alert('Payment Failed. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Payment Failed. Please try again.');
-            });
+const client = twilio(accountSid, authToken);
+
+const app = express();
+app.use(bodyParser.json());
+
+// POST endpoint for handling payments
+app.post('/payment', (req, res) => {
+    // Process payment logic here...
+
+    // Assuming payment processing happens successfully or unsuccessfully
+    const { phone_number, status, error } = req.body;
+
+    // Send SMS using Twilio
+    client.messages
+        .create({
+            body: status === 'success' ? 'Payment Successful!' : `Payment Failed: ${error}`,
+            from: twilioPhoneNumber,
+            to: phone_number
+        })
+        .then(message => {
+            console.log('SMS sent to:', message.to);
+            res.json({ status: 'SMS sent successfully' });
+        })
+        .catch(err => {
+            console.error('Error sending SMS:', err);
+            res.status(500).json({ error: 'Failed to send SMS' });
         });
-        document.getElementById('checkoutButton').addEventListener('click', function() {
-    // Simulate a successful checkout process
-    alert("Thank you for your purchase! Your order has been successfully placed and is being processed. You will receive another notification once your order has shipped. Have a great day!");
-
-    // Here you can add additional code to handle the actual checkout process,
-    // such as sending the order details to your server or updating the database.
 });
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 
     </script>
 </body>
