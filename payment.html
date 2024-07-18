@@ -175,7 +175,7 @@
             });
 
             try {
-                const response = await axios.post('/payment', formObj);
+                const response = await axios.post('/payment.html', formObj);
                 console.log(response.data);
                 alert('Payment processed successfully!');
                 form.reset();
