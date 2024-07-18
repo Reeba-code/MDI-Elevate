@@ -161,6 +161,34 @@
                 cartTotal.textContent = total.toFixed(2);
             }
         });
+          function searchProducts() {
+            var input = document.getElementById('searchInput').value.toLowerCase();
+            var products = [
+                { name: 'Product 1', description: 'Description of Product 1' },
+                { name: 'Product 2', description: 'Description of Product 2' },
+                { name: 'Product 3', description: 'Description of Product 3' },
+                { name: 'Product 4', description: 'Description of Product 4' }
+                // Add more products as needed
+            ];
+
+            var results = products.filter(function(product) {
+                return product.name.toLowerCase().includes(input) ||
+                       product.description.toLowerCase().includes(input);
+            });
+
+            displayResults(results);
+        }
+
+        function displayResults(results) {
+            var searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = '';
+
+            results.forEach(function(product) {
+                var resultElement = document.createElement('p');
+                resultElement.textContent = `${product.name} - ${product.description}`;
+                searchResults.appendChild(resultElement);
+            });
+        }
     </script>
 </body>
 </html>
