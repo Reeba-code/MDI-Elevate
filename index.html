@@ -190,6 +190,30 @@
                 searchResults.appendChild(resultElement);
             });
         }
+        const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+checkoutButton.addEventListener('click', async () => {
+    // Assuming 'cart' contains the items to include in the email or SMS
+    const emailContent = generateEmailContent(cart); // Define this function to format the email content
+    const msg = {
+        to: 'customer@example.com', // Replace with customer's email
+        from: 'your-email@example.com', // Replace with your verified sender
+        subject: 'Order Confirmation',
+        html: emailContent
+    };
+    
+    try {
+        await sgMail.send(msg);
+        console.log('Email sent');
+    } catch (error) {
+        console.error('Error sending email', error);
+    }
+
+    // Redirect to payment page after sending email
+    window.location.href = 'payment.html'; // Replace 'payment.html' with your actual payment page
+});
+
     </script>
 </body>
 </html>
