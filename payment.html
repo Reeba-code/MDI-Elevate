@@ -5,78 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment - Tlapeng Digital Tuckshop</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+        }
+
+        /* Main Content Styles */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .payment {
+            background-color: #fff;
+            padding: 2rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .payment h2 {
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
-<style>
-    /* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
-}
-
-.logo {
-    font-size: 1.5rem;
-}
-
-/* Main Content Styles */
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-}
-
-.payment {
-    background-color: #fff;
-    padding: 2rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
-
-.payment h2 {
-    margin-bottom: 1rem;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-button:hover {
-    background-color: #555;
-}
-
-</style>
 <body>
     <header>
         <div class="logo">Tlapeng Digital Tuckshop</div>
@@ -113,52 +112,78 @@ button:hover {
             </form>
         </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         const express = require('express');
-const bodyParser = require('body-parser');
-const twilio = require('twilio');
+        const bodyParser = require('body-parser');
+        const twilio = require('twilio');
 
-// Initialize Twilio client
-const accountSid = 'SK8b92dc81eab5d3847a78805fc2bc527e';
-const authToken = 'c3c0d4361901f96f9a163459ed7b673e';
-const twilioPhoneNumber = '+27636601370';
+        // Initialize Twilio client
+        const accountSid = 'SK8b92dc81eab5d3847a78805fc2bc527e';
+        const authToken = 'c3c0d4361901f96f9a163459ed7b673e';
+        const twilioPhoneNumber = '+27636601370';
 
-const client = twilio(accountSid, authToken);
+        const client = twilio(accountSid, authToken);
 
-const app = express();
-app.use(bodyParser.json());
+        const app = express();
+        app.use(bodyParser.json());
 
-// POST endpoint for handling payments
-app.post('/payment', (req, res) => {
-    // Process payment logic here...
-
-    // Assuming payment processing happens successfully or unsuccessfully
-    const { phone_number, status, error } = req.body;
-
-    // Send SMS using Twilio
-    client.messages
-        .create({
-            body: status === 'success' ? 'Payment Successful!' : `Payment Failed: ${error}`,
-            from: twilioPhoneNumber,
-            to: phone_number
-        })
-        .then(message => {
-            console.log('SMS sent to:', message.to);
-            res.json({ status: 'SMS sent successfully' });
-        })
-        .catch(err => {
-            console.error('Error sending SMS:', err);
-            res.status(500).json({ error: 'Failed to send SMS' });
+        // Serve HTML file
+        app.get('/', (req, res) => {
+            res.sendFile(__dirname + '/index.html');
         });
-});
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+        // POST endpoint for handling payments
+        app.post('/payment', (req, res) => {
+            // Process payment logic here...
 
+            // Assuming payment processing happens successfully or unsuccessfully
+            const { phone_number, status, error } = req.body;
 
+            // Send SMS using Twilio
+            client.messages
+                .create({
+                    body: status === 'success' ? 'Payment Successful!' : `Payment Failed: ${error}`,
+                    from: twilioPhoneNumber,
+                    to: phone_number
+                })
+                .then(message => {
+                    console.log('SMS sent to:', message.to);
+                    res.json({ status: 'SMS sent successfully' });
+                })
+                .catch(err => {
+                    console.error('Error sending SMS:', err);
+                    res.status(500).json({ error: 'Failed to send SMS' });
+                });
+        });
+
+        // Start server
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+
+        // Handle form submission
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const formObj = {};
+            formData.forEach((value, key) => {
+                formObj[key] = value;
+            });
+
+            try {
+                const response = await axios.post('/payment', formObj);
+                console.log(response.data);
+                alert('Payment processed successfully!');
+                form.reset();
+            } catch (error) {
+                console.error('Payment failed:', error);
+                alert('Payment failed. Please try again later.');
+            }
+        });
     </script>
 </body>
 </html>
