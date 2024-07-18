@@ -1,137 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tlapeng Digital Tuckshop</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <div class="logo">Tlapeng Digital Tuckshop</div>
-        <div class="search-bar">
-            <input type="text" placeholder="Search for products...">
-            <button>Search</button>
-        </div>
-        <div class="cart">
-            <button id="cart-button">Cart (<span id="cart-count">0</span>)</button>
-        </div>
-    </header>
-    <main>
-        <section class="products">
-            <div class="product" data-id="1" data-name="Wabona maize-meal" data-price="98.00">
-                <img src="pictures/maize.jpg" alt="Product 1">
-                <h2>Maize meal 10kg</h2>
-                <p>R 98.00</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product" data-id="2" data-name="Coca-cola" data-price="27.00">
-                <img src="pictures/coke.jpg" alt="Product 2">
-                <h2>Coca-cola 2 litre</h2>
-                <p>R26.99</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product" data-id="2" data-name="Excella" data-price="69.99">
-                <img src="pictures/oil.jpg" alt="Product 2">
-                <h2>Cooking oil 2 litre</h2>
-                <p>R69.99</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product" data-id="2" data-name="Selati-sugar" data-price="38.99">
-                <img src="pictures/sugar.jpg" alt="Product 2">
-                <h2>Sugar 2kg </h2>
-                <p>R38.99</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product" data-id="2" data-name="Koo-baked-beans" data-price="21.99">
-                <img src="pictures/beans.jpg" alt="Product 2">
-                <h2>Koo baked beans</h2>
-                <p>R21.99</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <div class="product" data-id="2" data-name="Lucky-star" data-price="25.00">
-                <img src="pictures/fish.jpg"Product 2">
-                <h2>Lucky star</h2>
-                <p>R25.00</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-        </section>
-    </main>
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Your Cart</h2>
-            <ul id="cart-items">
-                <!-- Cart items will be added here dynamically -->
-            </ul>
-            <p>Total: R<span id="cart-total">0</span></p>
-            <button id="checkout-button">Checkout</button>
-        </div>
-    </div>
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cart = [];
-            const cartButton = document.getElementById('cart-button');
-            const cartModal = document.getElementById('cart-modal');
-            const closeModal = document.querySelector('.close');
-            const cartCount = document.getElementById('cart-count');
-            const cartItems = document.getElementById('cart-items');
-            const cartTotal = document.getElementById('cart-total');
-            const checkoutButton = document.getElementById('checkout-button');
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', () => {
-                    const productElement = button.parentElement;
-                    const id = productElement.getAttribute('data-id');
-                    const name = productElement.getAttribute('data-name');
-                    const price = parseFloat(productElement.getAttribute('data-price'));
+.logo {
+    font-size: 1.5rem;
+}
 
-                    const productInCart = cart.find(item => item.id === id);
+.search-bar {
+    flex: 1;
+    margin: 0 10px;
+}
 
-                    if (productInCart) {
-                        productInCart.quantity++;
-                    } else {
-                        cart.push({ id, name, price, quantity: 1 });
-                    }
+.search-bar input[type="text"] {
+    width: 70%;
+    padding: 8px;
+    margin-right: 5px;
+}
 
-                    updateCart();
-                });
-            });
+.search-bar button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
 
-            cartButton.addEventListener('click', () => {
-                cartModal.style.display = 'block';
-            });
+.cart {
+    margin-left: 10px;
+}
 
-            closeModal.addEventListener('click', () => {
-                cartModal.style.display = 'none';
-            });
+.products {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
 
-            window.addEventListener('click', event => {
-                if (event.target === cartModal) {
-                    cartModal.style.display = 'none';
-                }
-            });
+.product {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
 
-            checkoutButton.addEventListener('click', () => {
-                window.location.href = 'payment.html'; // Replace 'payment.html' with the actual payment page URL
-            });
+.product img {
+    max-width: 100%;
+    height: auto;
+}
 
-            function updateCart() {
-                cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
-                cartItems.innerHTML = '';
-                let total = 0;
+.product h2 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
 
-                cart.forEach(item => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${item.name} - R${item.price} x ${item.quantity}`;
-                    cartItems.appendChild(listItem);
-                    total += item.price * item.quantity;
-                });
+.product p {
+    font-size: 1rem;
+    margin: 5px 0;
+}
 
-                cartTotal.textContent = total.toFixed(2);
-            }
-        });
-    </script>
-</body>
-</html>
+.product button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#cart-items {
+    list-style-type: none;
+    padding: 0;
+}
+
+#cart-items li {
+    margin-bottom: 10px;
+}
+
+#checkout-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Media Query for Responsive Design */
+@media (max-width: 768px) {
+    .search-bar input[type="text"] {
+        width: 60%;
+    }
+    
+    .products {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
