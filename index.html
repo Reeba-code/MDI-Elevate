@@ -9,11 +9,11 @@
 <body>
     <header>
         <div class="logo">Tlapeng Digital Tuckshop</div>
-         <div class="search-bar">
-        <input id="searchInput" type="text" placeholder="Search for products...">
-        <button onclick="searchProducts()">Search</button>
-    </div>
-    <div class="search-results" id="searchResults">
+        <div class="search-bar">
+            <input id="searchInput" type="text" placeholder="Search for products...">
+            <button onclick="searchProducts()">Search</button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
         <div class="cart">
             <button id="cart-button">Cart (<span id="cart-count">0</span>)</button>
         </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="product" data-id="4" data-name="Selati-sugar" data-price="38.99">
                 <img src="pictures/sugar.jpg" alt="Product 4">
-                <h2>Sugar 2kg </h2>
+                <h2>Sugar 2kg</h2>
                 <p>R38.99</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
@@ -51,32 +51,32 @@
                 <button class="add-to-cart">Add to Cart</button>
             </div>
             <div class="product" data-id="6" data-name="Lucky-star" data-price="25.00">
-                <img src="pictures/fish.jpg"Product 6">
+                <img src="pictures/fish.jpg" alt="Product 6">
                 <h2>Lucky star</h2>
                 <p>R25.00</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
-             <div class="product" data-id="7" data-name="Spekko rice" data-price="49.00">
-                <img src="pictures/rice.jpg"Product 7">
+            <div class="product" data-id="7" data-name="Spekko rice" data-price="49.00">
+                <img src="pictures/rice.jpg" alt="Product 7">
                 <h2>Spekko</h2>
                 <p>R49.99</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
-             <div class="product" data-id="8" data-name="Potatoes" data-price="17.99">
-                <img src="pictures/patatoes.jpg"Product 8">
+            <div class="product" data-id="8" data-name="Potatoes" data-price="17.99">
+                <img src="pictures/patatoes.jpg" alt="Product 8">
                 <h2>Potatoes</h2>
                 <p>R14.99</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
-             <div class="product" data-id="9" data-name="Tomatoes" data-price="17.99">
-                <img src="pictures/tomatoes.jpg"Product 9">
+            <div class="product" data-id="9" data-name="Tomatoes" data-price="17.99">
+                <img src="pictures/tomatoes.jpg" alt="Product 9">
                 <h2>Tomatoes</h2>
                 <p>R17.99</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
-             <div class="product" data-id="10" data-name="Rama" data-price="32.99">
-                <img src="pictures/rama.jpg"Product 10">
-                <h2>Rama </h2>
+            <div class="product" data-id="10" data-name="Rama" data-price="32.99">
+                <img src="pictures/rama.jpg" alt="Product 10">
+                <h2>Rama</h2>
                 <p>R32.99</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
@@ -93,12 +93,11 @@
             <button id="checkout-button">Checkout</button>
         </div>
     </div>
-    <div>
- <footer>
+    <footer>
         <p>
-            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Mafikeng Digital Innovation Hub <i class="fa fa-heart-o" aria-hidden="true"></i></p>
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Mafikeng Digital Innovation Hub
+        </p>
     </footer>
-</div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cart = [];
@@ -144,7 +143,9 @@
             });
 
             checkoutButton.addEventListener('click', () => {
-                window.location.href = 'payment.html'; // Replace 'payment.html' with the actual payment page URL
+                const orderDetails = generateOrderDetails(cart);
+                console.log(orderDetails);
+                window.location.href = 'payment.html';
             });
 
             function updateCart() {
@@ -161,90 +162,25 @@
 
                 cartTotal.textContent = total.toFixed(2);
             }
+
+            function generateOrderDetails(cart) {
+                let details = 'Order Details:\n';
+                cart.forEach(item => {
+                    details += `${item.name} - R${item.price} x ${item.quantity}\n`;
+                });
+                details += `Total: R${cartTotal.textContent}`;
+                return details;
+            }
+
+            function searchProducts() {
+                const input = document.getElementById('searchInput').value.toLowerCase();
+                const products = document.querySelectorAll('.product');
+                products.forEach(product => {
+                    const name = product.getAttribute('data-name').toLowerCase();
+                    product.style.display = name.includes(input) ? '' : 'none';
+                });
+            }
         });
-         function searchProducts() {
-            var input = document.getElementById('searchInput').value.toLowerCase();
-            var products = [
-                {name: 'Spekko', description: ' ' },
-                { name: 'Product 2', description: 'Description of Product 2' },
-                { name: 'Product 3', description: 'Description of Product 3' },
-                { name: 'Product 4', description: 'Description of Product 4' }
-                
-            ];
-
-            var results = products.filter(function(product) {
-                return product.name.toLowerCase().includes(input) ||
-                       product.description.toLowerCase().includes(input);
-            });
-
-            displayResults(results);
-        }
-
-        function displayResults(results) {
-            var searchResults = document.getElementById('searchResults');
-            searchResults.innerHTML = '';
-
-            results.forEach(function(product) {
-                var resultElement = document.createElement('p');
-                resultElement.textContent = `${product.name} - ${product.description}`;
-                searchResults.appendChild(resultElement);
-            });
-        }
-        const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-checkoutButton.addEventListener('click', async () => {
-    // Assuming 'cart' contains the items to include in the email or SMS
-    const emailContent = generateEmailContent(cart); // Define this function to format the email content
-    const msg = {
-        to: 'customer@example.com', // Replace with customer's email
-        from: 'your-email@example.com', // Replace with your verified sender
-        subject: 'Order Confirmation',
-        html: emailContent
-    };
-    
-    try {
-        await sgMail.send(msg);
-        console.log('Email sent');
-    } catch (error) {
-        console.error('Error sending email', error);
-    }
-
-    // Redirect to payment page after sending email
-    window.location.href = 'payment.html'; // Replace 'payment.html' with your actual payment page
-});
-
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
